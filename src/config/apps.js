@@ -5,8 +5,16 @@ import IconPicker from "../components/Apps/IconPicker/IconPicker";
 import DisplayProperties from "../components/Apps/DisplayProperties/DisplayProperties";
 import Minesweeper from "../components/Apps/Minesweeper/Minesweeper";
 import Paint from "../components/Apps/Paint/Paint";
+import InternetExplorer from "../components/Apps/InternetExplorer/InternetExplorer";
 
 export const DESKTOP_ICONS = [
+  {
+    id: "internet-explorer",
+    label: "Internet Explorer",
+    icon: "apps/32/internet-web-browser.png",
+    defaultSize: { width: 700, height: 500 },
+    component: InternetExplorer
+  },
   {
     id: "my-documents",
     label: "My Documents",
@@ -65,6 +73,8 @@ export const SYSTEM_ITEMS = [
 ];
 
 export const START_MENU_ITEMS = [
+  { id: "internet-explorer", label: "Internet Explorer", icon: "apps/16/web-browser.png" },
+  { label: "Outlook Express", icon: "apps/16/internet-mail.png" },
   {
     label: "Programs",
     icon: "categories/16/applications-all.png",
