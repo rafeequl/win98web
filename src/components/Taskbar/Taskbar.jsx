@@ -2,6 +2,7 @@ import React from "react";
 import Clock from "./Clock";
 import StartMenu from "./StartMenu";
 import WinIcon from "../Common/WinIcon";
+import VolumeControl from "./VolumeControl";
 
 export default function Taskbar({
   windows,
@@ -11,6 +12,8 @@ export default function Taskbar({
   onOpenWindow,
   onShutdown
 }) {
+  const [volOpen, setVolOpen] = React.useState(false);
+
   return (
     <div
       className="panel"
@@ -96,8 +99,11 @@ export default function Taskbar({
         })}
       </div>
 
-      {/* Tray */}
-      <div className="inset" style={{ display: "flex", alignItems: "center", gap: 6, padding: "2px 8px", height: 26, fontSize: 11 }}>
+      <div 
+        className="inset" 
+        style={{ display: "flex", alignItems: "center", gap: 6, padding: "2px 8px", height: 26, fontSize: 11, cursor: "default" }}
+        onClick={(e) => { e.stopPropagation(); setVolOpen(!volOpen); }}
+      >
         <WinIcon icon="status/16/stock_volume.png" size={16} title="Volume" />
         <Clock />
       </div>
@@ -108,6 +114,10 @@ export default function Taskbar({
           onOpenWindow={onOpenWindow}
           onShutdown={onShutdown}
         />
+      )}
+
+      {volOpen && (
+        <VolumeControl onClose={() => setVolOpen(false)} />
       )}
     </div>
   );
