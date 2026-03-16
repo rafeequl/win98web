@@ -51,3 +51,8 @@ Found a security hole? It's probably just a legacy feature. Want to add a new ap
 MIT
 
 
+--
+
+## Icons
+
+https://github.com/nestoris/Win98SE
