@@ -30,7 +30,7 @@ export function WinCtrlBtn({ lbl, title, action, danger }) {
   );
 }
 
-export default function WindowShell({ win, onClose, onFocus, onMinimize, onUpdate }) {
+export default function WindowShell({ win, isActive, onClose, onFocus, onMinimize, onUpdate }) {
   const [pos, setPos] = useState(win.position);
   const [size, setSize] = useState(win.size);
   const [maximized, setMaximized] = useState(win.maximized || false);
@@ -135,7 +135,9 @@ export default function WindowShell({ win, onClose, onFocus, onMinimize, onUpdat
         onDoubleClick={() => { setMaximized(m => !m); onUpdate({ maximized: !maximized }); }}
         style={{
           height: 20, 
-          background: "linear-gradient(to right, var(--w98-blue), #1084d0)",
+          background: isActive 
+            ? "linear-gradient(to right, var(--w98-blue), #1084d0)" 
+            : "linear-gradient(to right, var(--w98-dgray), #c0c0c0)",
           display: "flex", 
           alignItems: "center", 
           justifyContent: "space-between",

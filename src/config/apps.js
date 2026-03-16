@@ -1,5 +1,6 @@
 import MyComputerWindow from "../components/Apps/MyComputer/MyComputer";
 import MyDocumentsWindow from "../components/Apps/MyDocuments/MyDocuments";
+import NotepadWindow from "../components/Apps/Notepad/Notepad";
 
 export const DESKTOP_ICONS = [
   {
@@ -16,8 +17,13 @@ export const DESKTOP_ICONS = [
     defaultSize: { width: 480, height: 320 },
     component: MyComputerWindow,
   },
-  // ➕ Add more apps here:
-  // { id: "notepad", label: "Notepad", icon: "📝", defaultSize: { width: 500, height: 400 }, component: NotepadWindow },
+  { 
+    id: "notepad", 
+    label: "Notepad", 
+    icon: "📝", 
+    defaultSize: { width: 500, height: 400 }, 
+    component: NotepadWindow 
+  },
 ];
 
 export const SYSTEM_ITEMS = [
