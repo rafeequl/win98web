@@ -1,18 +1,6 @@
 # 📟 Win98 Web: The Retro Desktop Experience
 
-Welcome to **Win98 Web**, where we've painstakingly recreated the aesthetic and soulful "clunkiness" of a 1998 computing masterpiece, but powered by the lightning-fast modern web stack.
-
-> "It's not a bug, it's a nostalgic feature." — *Every dev ever.*
-
----
-
-## ✨ Features
-
-- **📂 Multi-Window Management**: Open, drag, resize, and close apps just like it's 1998.
-- **💾 Memory Persistance**: Our windows actually remember how big they were when you minimize them (we fixed that one bug Bill missed).
-- **🕹️ Authentic Taskbar**: A functional taskbar with a Start Menu, system clock, and active window management.
-- **🖼️ Pixel-Perfect UI**: CSS-driven 3D borders and linear gradients that scream "State of the Art" (circa 20th century).
-- **🚀 Built with Vite**: Starts faster than a real Win98 machine can even find its floppy drive.
+Welcome to **Win98 Web**, it's a time machine to the 90s.
 
 ---
 
@@ -31,7 +19,7 @@ Get up and running before your dial-up connection drops:
 
 ```bash
 # Clone this artifact from the past
-git clone [your-repo-url]
+git clone git@github.com:rafeequl/win98web.git
 
 # Install dependencies (no CD-ROM required)
 npm install
@@ -55,17 +43,11 @@ npm run dev
 
 Found a security hole? It's probably just a legacy feature. Want to add a new app? Drop it into `src/components/Apps/` and register it in `src/config/apps.js`. 
 
-*Note: Please ensure all code is written while listening to Vaporwave.*
 
 ---
 
 ## 📜 License
 
-MIT (Mostly Incredible Technology).
+MIT
 
----
 
-<p align="center">
-  <b>Safe to Turn Off Your Computer?</b><br>
-  No, keep coding.
-</p>
