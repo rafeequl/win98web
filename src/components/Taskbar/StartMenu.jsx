@@ -58,7 +58,11 @@ function StartItem({ item, onOpenWindow, onClose, isSubmenu = false }) {
 
   const handleClick = (e) => {
     e.stopPropagation();
-    if (hasSubmenu) return;
+
+    if (hasSubmenu) {
+      setShowSub(!showSub);
+      return;
+    }
 
     if (item.id) {
       const fullApp = DESKTOP_ICONS.find(a => a.id === item.id);

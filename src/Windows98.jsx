@@ -20,6 +20,24 @@ export default function Windows98() {
   const [wallpaper, setWallpaper] = useState(localStorage.getItem("desktop-wallpaper") || "");
   const [systemStatus, setSystemStatus] = useState("active"); // active, shutdown, shutting-down, off
 
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const width = window.innerWidth;
+      const baseWidth = 800; // Target minimum desktop width
+      if (width < baseWidth) {
+        setScale(width / baseWidth);
+      } else {
+        setScale(1);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   useEffect(() => {
     const handleWpChange = (e) => setWallpaper(e.detail);
     window.addEventListener("wallpaper-change", handleWpChange);
@@ -73,71 +91,83 @@ export default function Windows98() {
     );
   }
 
+  const osStyle = {
+    transform: scale !== 1 ? `scale(${scale})` : "none",
+    width: scale !== 1 ? "800px" : "100%",
+    height: scale !== 1 ? `${window.innerHeight / scale}px` : "100%",
+    position: "relative",
+    overflow: "hidden",
+    display: "flex",
+    flexDirection: "column",
+  };
+
   return (
-    <div className="win98-os" onClick={() => setStartOpen(false)}>
-      {systemStatus === "shutdown" && (
-        <div style={{
-          position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
-          zIndex: 1000000, display: "flex", alignItems: "center", justifyContent: "center",
-          background: "rgba(0,0,0,0.1)", backdropFilter: "grayscale(100%)",
-        }}>
-          <div className="panel" style={{ width: 320, padding: 2, border: "2px solid #fff", borderRightColor: "#000", borderBottomColor: "#000" }}>
-            <div style={{ height: 18, background: "var(--w98-blue)", color: "#fff", fontWeight: "bold", padding: "0 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-              <span>Shut Down Windows</span>
-              <button className="btn98" onClick={() => setSystemStatus("active")} style={{ minWidth: 16, height: 14, fontSize: 9, padding: 0 }}>x</button>
-            </div>
-            <div style={{ padding: "12px 16px", display: "flex", gap: 16 }}>
-              <WinIcon icon="actions/32/system-shutdown.png" size={32} />
-              <div style={{ fontSize: 11 }}>
-                <p style={{ fontWeight: "bold", marginBottom: 12 }}>Are you sure you want to:</p>
-                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-                  <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                    <input type="radio" defaultChecked /> <span>Shut down the computer?</span>
-                  </label>
-                  <label style={{ display: "flex", alignItems: "center", gap: 6, opacity: 0.5 }}>
-                    <input type="radio" disabled /> <span>Restart the computer?</span>
-                  </label>
+    <div className={`win98-os ${scale !== 1 ? "mobile-scale" : ""}`} onClick={() => setStartOpen(false)}>
+      <div style={osStyle}>
+        {systemStatus === "shutdown" && (
+          <div style={{
+            position: "absolute", top: 0, left: 0, right: 0, bottom: 0,
+            zIndex: 1000000, display: "flex", alignItems: "center", justifyContent: "center",
+            background: "rgba(0,0,0,0.1)", backdropFilter: "grayscale(100%)",
+          }}>
+            <div className="panel" style={{ width: 320, padding: 2, border: "2px solid #fff", borderRightColor: "#000", borderBottomColor: "#000" }}>
+              <div style={{ height: 18, background: "var(--w98-blue)", color: "#fff", fontWeight: "bold", padding: "0 4px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span>Shut Down Windows</span>
+                <button className="btn98" onClick={() => setSystemStatus("active")} style={{ minWidth: 16, height: 14, fontSize: 9, padding: 0 }}>x</button>
+              </div>
+              <div style={{ padding: "12px 16px", display: "flex", gap: 16 }}>
+                <WinIcon icon="actions/32/system-shutdown.png" size={32} />
+                <div style={{ fontSize: 11 }}>
+                  <p style={{ fontWeight: "bold", marginBottom: 12 }}>Are you sure you want to:</p>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6 }}>
+                      <input type="radio" defaultChecked /> <span>Shut down the computer?</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 6, opacity: 0.5 }}>
+                      <input type="radio" disabled /> <span>Restart the computer?</span>
+                    </label>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div style={{ padding: 12, display: "flex", justifyContent: "flex-end", gap: 8 }}>
-              <button className="btn98" onClick={performShutdown}>Yes</button>
-              <button className="btn98" onClick={() => setSystemStatus("active")}>No</button>
+              <div style={{ padding: 12, display: "flex", justifyContent: "flex-end", gap: 8 }}>
+                <button className="btn98" onClick={performShutdown}>Yes</button>
+                <button className="btn98" onClick={() => setSystemStatus("active")}>No</button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Desktop Layer */}
-      <Desktop onIconDoubleClick={openWindow} wallpaper={wallpaper} />
+        {/* Desktop Layer */}
+        <Desktop onIconDoubleClick={openWindow} wallpaper={wallpaper} />
 
-      {/* Window Manager Layer */}
-      {windows.map(w => {
-        const activeWindows = windows.filter(win => !win.minimized);
-        const isActive = !w.minimized && activeWindows.length > 0 && activeWindows.every(win => win.zIndex <= w.zIndex);
+        {/* Window Manager Layer */}
+        {windows.map(w => {
+          const activeWindows = windows.filter(win => !win.minimized);
+          const isActive = !w.minimized && activeWindows.length > 0 && activeWindows.every(win => win.zIndex <= w.zIndex);
 
-        return (
-          <WindowShell
-            key={w.id}
-            win={w}
-            isActive={isActive}
-            onClose={() => closeWindow(w.id)}
-            onFocus={() => focusWindow(w.id)}
-            onMinimize={() => minimizeWindow(w.id)}
-            onUpdate={updates => updateWindow(w.id, updates)}
-          />
-        );
-      })}
+          return (
+            <WindowShell
+              key={w.id}
+              win={w}
+              isActive={isActive}
+              onClose={() => closeWindow(w.id)}
+              onFocus={() => focusWindow(w.id)}
+              onMinimize={() => minimizeWindow(w.id)}
+              onUpdate={updates => updateWindow(w.id, updates)}
+            />
+          );
+        })}
 
-      {/* Taskbar Layer */}
-      <Taskbar
-        windows={windows}
-        startOpen={startOpen}
-        setStartOpen={setStartOpen}
-        onTaskbarClick={handleTaskbarClick}
-        onOpenWindow={openWindow}
-        onShutdown={triggerShutdown}
-      />
+        {/* Taskbar Layer */}
+        <Taskbar
+          windows={windows}
+          startOpen={startOpen}
+          setStartOpen={setStartOpen}
+          onTaskbarClick={handleTaskbarClick}
+          onOpenWindow={openWindow}
+          onShutdown={triggerShutdown}
+        />
+      </div>
     </div>
   );
 }

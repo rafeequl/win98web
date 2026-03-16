@@ -38,45 +38,65 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
   const [isManipulating, setIsManipulating] = useState(false);
   const WindowContent = win.component;
 
+  const getCoords = (e) => {
+    if (e.touches && e.touches.length > 0) {
+      return { x: e.touches[0].clientX, y: e.touches[0].clientY };
+    }
+    return { x: e.clientX, y: e.clientY };
+  };
+
   const handleDragStart = e => {
     if (maximized) return;
-    if (e.button !== 0) return; // Only left click
-    e.preventDefault();
+    if (e.type === 'mousedown' && e.button !== 0) return;
+
+    // Don't prevent default on touch to allow clicking buttons, but we need it for drag
+    if (e.type === 'mousedown') e.preventDefault();
+
     onFocus();
     setIsManipulating(true);
 
-    const sx = e.clientX - pos.x, sy = e.clientY - pos.y;
+    const { x: curX, y: curY } = getCoords(e);
+    const sx = curX - pos.x, sy = curY - pos.y;
 
     const onMove = me => {
-      setPos({ x: Math.max(0, me.clientX - sx), y: Math.max(0, me.clientY - sy) });
+      const { x: moveX, y: moveY } = getCoords(me);
+      setPos({ x: Math.max(0, moveX - sx), y: Math.max(0, moveY - sy) });
+      if (me.cancelable) me.preventDefault();
     };
 
     const onUp = (me) => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onUp);
       setIsManipulating(false);
-      onUpdate({ position: { x: Math.max(0, me.clientX - sx), y: Math.max(0, me.clientY - sy) } });
+
+      const { x: upX, y: upY } = getCoords(me);
+      onUpdate({ position: { x: Math.max(0, upX - sx), y: Math.max(0, upY - sy) } });
     };
 
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: false });
     window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", onUp);
   };
 
   const handleResizeStart = (e, dir) => {
     if (maximized) return;
-    if (e.button !== 0) return;
+    if (e.type === 'mousedown' && e.button !== 0) return;
     e.preventDefault();
     e.stopPropagation();
     onFocus();
     setIsManipulating(true);
 
-    const startX = e.clientX, startY = e.clientY;
+    const { x: startX, y: startY } = getCoords(e);
     const startW = size.width, startH = size.height;
     const startPX = pos.x, startPY = pos.y;
 
     const onMove = me => {
+      const { x: moveX, y: moveY } = getCoords(me);
       let newW = startW, newH = startH, newX = startPX, newY = startPY;
-      const dx = me.clientX - startX, dy = me.clientY - startY;
+      const dx = moveX - startX, dy = moveY - startY;
 
       if (dir.includes("e")) newW = Math.max(200, startW + dx);
       if (dir.includes("s")) newH = Math.max(100, startH + dy);
@@ -85,15 +105,19 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
 
       setPos({ x: newX, y: newY });
       setSize({ width: newW, height: newH });
+      if (me.cancelable) me.preventDefault();
     };
 
     const onUp = (me) => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("touchmove", onMove);
+      window.removeEventListener("touchend", onUp);
       setIsManipulating(false);
 
+      const { x: upX, y: upY } = getCoords(me);
       let finalW = startW, finalH = startH, finalX = startPX, finalY = startPY;
-      const dx = me.clientX - startX, dy = me.clientY - startY;
+      const dx = upX - startX, dy = upY - startY;
 
       if (dir.includes("e")) finalW = Math.max(200, startW + dx);
       if (dir.includes("s")) finalH = Math.max(100, startH + dy);
@@ -105,8 +129,10 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
         size: { width: finalW, height: finalH }
       });
     };
-    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mousemove", onMove, { passive: false });
     window.addEventListener("mouseup", onUp);
+    window.addEventListener("touchmove", onMove, { passive: false });
+    window.addEventListener("touchend", onUp);
   };
 
   const containerStyle = maximized
@@ -132,20 +158,21 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
       {/* Resize handles */}
       {!maximized && (
         <>
-          <div onMouseDown={e => handleResizeStart(e, "n")} style={{ position: "absolute", top: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 10 }} />
-          <div onMouseDown={e => handleResizeStart(e, "s")} style={{ position: "absolute", bottom: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 10 }} />
-          <div onMouseDown={e => handleResizeStart(e, "e")} style={{ position: "absolute", top: 4, bottom: 4, right: -4, width: 8, cursor: "ew-resize", zIndex: 10 }} />
-          <div onMouseDown={e => handleResizeStart(e, "w")} style={{ position: "absolute", top: 4, bottom: 4, left: -4, width: 8, cursor: "ew-resize", zIndex: 10 }} />
-          <div onMouseDown={e => handleResizeStart(e, "nw")} style={{ position: "absolute", top: -4, left: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 11 }} />
-          <div onMouseDown={e => handleResizeStart(e, "ne")} style={{ position: "absolute", top: -4, right: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 11 }} />
-          <div onMouseDown={e => handleResizeStart(e, "sw")} style={{ position: "absolute", bottom: -4, left: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 11 }} />
-          <div onMouseDown={e => handleResizeStart(e, "se")} style={{ position: "absolute", bottom: -4, right: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "n")} onTouchStart={e => handleResizeStart(e, "n")} style={{ position: "absolute", top: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "s")} onTouchStart={e => handleResizeStart(e, "s")} style={{ position: "absolute", bottom: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "e")} onTouchStart={e => handleResizeStart(e, "e")} style={{ position: "absolute", top: 4, bottom: 4, right: -4, width: 8, cursor: "ew-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "w")} onTouchStart={e => handleResizeStart(e, "w")} style={{ position: "absolute", top: 4, bottom: 4, left: -4, width: 8, cursor: "ew-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "nw")} onTouchStart={e => handleResizeStart(e, "nw")} style={{ position: "absolute", top: -4, left: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "ne")} onTouchStart={e => handleResizeStart(e, "ne")} style={{ position: "absolute", top: -4, right: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "sw")} onTouchStart={e => handleResizeStart(e, "sw")} style={{ position: "absolute", bottom: -4, left: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "se")} onTouchStart={e => handleResizeStart(e, "se")} style={{ position: "absolute", bottom: -4, right: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 11 }} />
         </>
       )}
 
       {/* Title bar */}
       <div
         onMouseDown={handleDragStart}
+        onTouchStart={handleDragStart}
         onDoubleClick={() => { setMaximized(m => !m); onUpdate({ maximized: !maximized }); }}
         style={{
           height: 20,

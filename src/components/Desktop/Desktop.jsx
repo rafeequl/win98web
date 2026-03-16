@@ -6,7 +6,13 @@ export function DesktopIcon({ icon, selected, onSelect, onDoubleClick }) {
   const lastClick = useRef(0);
 
   const handleClick = e => {
-    e.stopPropagation();
+    if (e.type === 'touchstart') {
+      // For touch, we don't want to prevent default as it might block the event chain
+      // but we handle the selection and double-tap here
+    } else {
+      e.stopPropagation();
+    }
+
     const now = Date.now();
     if (now - lastClick.current < 400) {
       onDoubleClick();
@@ -20,6 +26,7 @@ export function DesktopIcon({ icon, selected, onSelect, onDoubleClick }) {
   return (
     <div
       onClick={handleClick}
+      onTouchStart={handleClick}
       className={`desktop-icon ${selected ? "selected" : ""}`}
       style={{
         display: "flex",

@@ -48,7 +48,18 @@ export default function Taskbar({
       <div style={{ width: 2, height: 26, boxShadow: "inset -1px 0 0 #fff, inset 1px 0 0 var(--w98-dgray)" }} />
 
       {/* Window buttons */}
-      <div style={{ flex: 1, display: "flex", gap: 3, overflow: "hidden" }}>
+      <div style={{
+        flex: 1,
+        display: "flex",
+        gap: 3,
+        overflowX: "auto",
+        overflowY: "hidden",
+        scrollbarWidth: "none", /* Firefox */
+        msOverflowStyle: "none", /* IE/Edge */
+      }}>
+        <style>{`
+          div::-webkit-scrollbar { display: none; }
+        `}</style>
         {windows.map(w => {
           const activeWindows = windows.filter(win => !win.minimized);
           const isActive = !w.minimized && activeWindows.every(win => win.zIndex <= w.zIndex);

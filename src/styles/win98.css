@@ -9,6 +9,12 @@
 
 body {
   overflow: hidden;
+  touch-action: none; /* Prevents scroll/zoom gestures from interfering */
+}
+
+.mobile-scale {
+  transform-origin: top left;
+  /* We'll calculate the exact scale in JS */
 }
 
 :root {
