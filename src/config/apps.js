@@ -3,6 +3,7 @@ import MyDocumentsWindow from "../components/Apps/MyDocuments/MyDocuments";
 import NotepadWindow from "../components/Apps/Notepad/Notepad";
 import IconPicker from "../components/Apps/IconPicker/IconPicker";
 import DisplayProperties from "../components/Apps/DisplayProperties/DisplayProperties";
+import Minesweeper from "../components/Apps/Minesweeper/Minesweeper";
 
 export const DESKTOP_ICONS = [
   {
@@ -25,6 +26,13 @@ export const DESKTOP_ICONS = [
     icon: "apps/32/accessories-text-editor.png",
     defaultSize: { width: 500, height: 400 },
     component: NotepadWindow
+  },
+  {
+    id: "minesweeper",
+    label: "Minesweeper",
+    icon: "apps/32/mines.png",
+    defaultSize: { width: 200, height: 260 },
+    component: Minesweeper
   },
   {
     id: "display-props",
