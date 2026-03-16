@@ -27,7 +27,7 @@ function StartItem({ icon, onClick }) {
   );
 }
 
-export default function StartMenu({ onClose, onOpenWindow }) {
+export default function StartMenu({ onClose, onOpenWindow, onShutdown }) {
   const handleItem = (e, icon) => {
     e.stopPropagation();
     onOpenWindow(icon);
@@ -88,7 +88,14 @@ export default function StartMenu({ onClose, onOpenWindow }) {
         ))}
         <div style={{ margin: "4px 6px", height: 2, background: "var(--w98-dgray)", boxShadow: "0 1px 0 #fff" }} />
         {SYSTEM_ITEMS.map(item => (
-          <StartItem key={item.label} icon={item} onClick={onClose} />
+          <StartItem
+            key={item.label}
+            icon={item}
+            onClick={() => {
+              if (item.label === "Shut Down...") onShutdown();
+              onClose();
+            }}
+          />
         ))}
       </div>
     </div>

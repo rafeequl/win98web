@@ -8,7 +8,8 @@ export default function Taskbar({
   startOpen,
   setStartOpen,
   onTaskbarClick,
-  onOpenWindow
+  onOpenWindow,
+  onShutdown
 }) {
   return (
     <div
@@ -94,6 +95,7 @@ export default function Taskbar({
         <StartMenu
           onClose={() => setStartOpen(false)}
           onOpenWindow={onOpenWindow}
+          onShutdown={onShutdown}
         />
       )}
     </div>
