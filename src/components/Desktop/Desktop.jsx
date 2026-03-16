@@ -61,11 +61,14 @@ export default function Desktop({ onIconDoubleClick, wallpaper }) {
     setSelectedId(null);
   };
 
+  const base = import.meta.env.BASE_URL || "/";
   const desktopStyle = {
     flex: 1,
     position: "relative",
     background: "var(--w98-bg)",
-    backgroundImage: wallpaper ? `url(/wallpapers/${wallpaper})` : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px)",
+    backgroundImage: wallpaper
+      ? `url(${base}wallpapers/${wallpaper})`.replace(/\/+/g, '/')
+      : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px)",
     backgroundSize: wallpaper ? "cover" : "auto",
     backgroundPosition: wallpaper ? "center" : "0 0",
     backgroundRepeat: wallpaper ? "no-repeat" : "repeat",

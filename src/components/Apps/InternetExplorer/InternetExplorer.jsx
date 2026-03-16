@@ -22,7 +22,7 @@ const WELCOME_PAGE = `
     </head>
     <body>
       <div class="header">
-        <img src="/icons/apps/32/web-browser.png" width="32" />
+        <img src="icons/apps/32/web-browser.png" width="32" />
         Internet Explorer 4.0
       </div>
       <div class="content">

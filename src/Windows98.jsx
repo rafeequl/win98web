@@ -87,7 +87,7 @@ export default function Windows98() {
               <button className="btn98" onClick={() => setSystemStatus("active")} style={{ minWidth: 16, height: 14, fontSize: 9, padding: 0 }}>x</button>
             </div>
             <div style={{ padding: "12px 16px", display: "flex", gap: 16 }}>
-              <img src="/icons/actions/32/system-shutdown.png" style={{ width: 32, height: 32 }} />
+              <WinIcon icon="actions/32/system-shutdown.png" size={32} />
               <div style={{ fontSize: 11 }}>
                 <p style={{ fontWeight: "bold", marginBottom: 12 }}>Are you sure you want to:</p>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
