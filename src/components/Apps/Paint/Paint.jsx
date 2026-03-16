@@ -38,6 +38,7 @@ export default function Paint() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
+    // Ensure transparent background is white by default
     ctx.fillStyle = "#ffffff";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
   }, []);
@@ -88,62 +89,59 @@ export default function Paint() {
 
   const stopDrawing = () => setIsDrawing(false);
 
-  // Custom Cursor Support
-  const getCursor = () => {
-    switch (tool) {
-      case "pencil": return "url(/icons/actions/16/document-edit.png) 0 16, crosshair";
-      case "brush": return "url(/icons/categories/16/applications-painting.png) 0 16, crosshair";
-      case "eraser": return "cell";
-      case "picker": return "url(/icons/actions/16/color-picker.png) 0 16, help";
-      case "zoom": return "zoom-in";
-      default: return "crosshair";
-    }
-  };
-
-  const clearCanvas = () => {
-    if (!window.confirm("Clear entire image?")) return;
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    ctx.fillStyle = "#ffffff";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-  };
-
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "100%", background: "var(--w98-gray)", userSelect: "none" }}>
       {/* Menu bar */}
       <div style={{ display: "flex", gap: 10, padding: "2px 8px", fontSize: 11, borderBottom: "1px solid #fff", borderTop: "1px solid #fff", marginBottom: 2 }}>
         {["File", "Edit", "View", "Image", "Colors", "Help"].map(m => (
-          <span key={m} style={{ cursor: "default" }} onClick={m === "File" ? clearCanvas : undefined}>{m}</span>
+          <span key={m} style={{ cursor: "default" }}>{m}</span>
         ))}
       </div>
 
-      <div style={{ flex: 1, display: "flex", padding: 2, gap: 4, overflow: "hidden" }}>
+      <div style={{ flex: 1, display: "flex", padding: "2px 4px", gap: 4, overflow: "hidden" }}>
         {/* Toolbox */}
-        <div style={{ width: 56, background: "var(--w98-gray)", display: "flex", flexDirection: "column", alignItems: "center", padding: "2px", borderRight: "1px solid #808080" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1, padding: 1, background: "#d0d0d0", border: "1px solid #808080" }}>
+        <div style={{ width: 56, display: "flex", flexDirection: "column", gap: 4 }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            background: "#dfdfdf",
+            border: "1px solid",
+            borderColor: "#808080 #fff #fff #808080",
+            padding: 1
+          }}>
             {TOOLS.map(t => (
-              <button
+              <div
                 key={t.id}
                 onClick={() => setTool(t.id)}
-                className={`btn98${tool === t.id ? " pressed" : ""}`}
+                className={`btn98 ${tool === t.id ? 'pressed' : ''}`}
                 style={{
                   width: 25,
                   height: 25,
+                  minWidth: 25,
                   padding: 0,
-                  border: tool === t.id ? "1px inset #fff" : "1px solid",
-                  borderColor: tool === t.id ? "#000" : "#fff #808080 #808080 #fff",
-                  boxShadow: tool === t.id ? "inset 1px 1px 1px #000" : "none",
-                  background: tool === t.id ? "#fff" : "var(--w98-gray)"
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: tool === t.id ? "url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAIAAAACCAYAAABytg0kAAAAD0lEQVQImWNgYGBoYGAEAAMBAGAAtW60AAAAAElFTkSuQmCC)" : "var(--w98-gray)",
+                  boxShadow: tool === t.id ? "inset 1px 1px 0 #000, 1px 1px 0 #fff" : undefined
                 }}
                 title={t.label}
               >
                 <WinIcon icon={t.icon} size={16} fallback={t.fallback} />
-              </button>
+              </div>
             ))}
           </div>
 
           {/* Tool Options Area */}
-          <div className="inset" style={{ width: 42, height: 60, marginTop: 4, background: "var(--w98-gray)", display: "flex", alignItems: "center", justifyContent: "center", border: "2px inset #fff" }}>
+          <div className="inset" style={{
+            width: 52,
+            height: 64,
+            background: "var(--w98-gray)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            border: "2px inset #fff"
+          }}>
             {(tool === "brush" || tool === "eraser" || tool === "pencil") && (
               <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                 {[1, 3, 5].map(s => (
@@ -153,8 +151,9 @@ export default function Paint() {
                     style={{
                       width: s + 4,
                       height: s + 4,
-                      background: brushSize === s ? "#000" : "#404040",
+                      background: "#000",
                       borderRadius: tool === "brush" ? "50%" : "0",
+                      opacity: brushSize === s ? 1 : 0.4,
                       cursor: "pointer",
                       border: brushSize === s ? "1px solid #fff" : "1px solid transparent"
                     }}
@@ -165,7 +164,7 @@ export default function Paint() {
           </div>
         </div>
 
-        {/* Canvas Area */}
+        {/* Canvas Area Container */}
         <div className="inset" style={{
           flex: 1,
           background: "var(--w98-dgray)",
@@ -175,6 +174,7 @@ export default function Paint() {
           border: "2px solid",
           borderColor: "#808080 #fff #fff #808080"
         }}>
+          {/* The white drawing surface */}
           <div style={{ background: "#fff", padding: 0, boxShadow: "1px 1px 0 #fff", margin: "auto" }}>
             <canvas
               ref={canvasRef}
@@ -186,7 +186,7 @@ export default function Paint() {
               onMouseLeave={stopDrawing}
               style={{
                 background: "#fff",
-                cursor: getCursor(),
+                cursor: "crosshair", // Universal Paint cursor
                 display: "block"
               }}
             />
@@ -195,30 +195,49 @@ export default function Paint() {
       </div>
 
       {/* Color Palette */}
-      <div style={{ height: 48, background: "var(--w98-gray)", padding: "4px 8px", display: "flex", gap: 12, borderTop: "2px solid #fff" }}>
+      <div style={{
+        height: 48,
+        background: "var(--w98-gray)",
+        padding: "4px 8px",
+        display: "flex",
+        gap: 12,
+        borderTop: "2px solid #fff",
+        alignItems: "center"
+      }}>
         {/* Selected Colors Preview */}
-        <div className="inset" style={{ width: 32, height: 32, padding: 2, background: "var(--w98-gray)", position: "relative", border: "2px inset #fff" }}>
+        <div style={{
+          width: 32,
+          height: 32,
+          background: "var(--w98-gray)",
+          position: "relative",
+          boxShadow: "inset 1px 1px 0 #808080, inset -1px -1px 0 #fff"
+        }}>
+          {/* Background color (secondary) */}
           <div style={{
             position: "absolute",
-            top: 2,
-            left: 2,
-            width: 14,
-            height: 14,
-            background: color,
-            border: "1px solid #000",
-            zIndex: 2
-          }} />
-          <div style={{
-            position: "absolute",
-            bottom: 2,
-            right: 2,
-            width: 14,
-            height: 14,
+            bottom: 3,
+            right: 3,
+            width: 16,
+            height: 16,
             background: secondaryColor,
-            border: "1px solid #000",
+            border: "1px solid #808080",
+            boxShadow: "inset 1px 1px 0 #fff",
             zIndex: 1
           }} />
+          {/* Foreground color (primary) */}
+          <div style={{
+            position: "absolute",
+            top: 3,
+            left: 3,
+            width: 16,
+            height: 16,
+            background: color,
+            border: "1px solid #808080",
+            boxShadow: "inset 1px 1px 0 #fff",
+            zIndex: 2
+          }} />
         </div>
+
         {/* Colors Grid */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(14, 16px)", gridTemplateRows: "repeat(2, 16px)", gap: 1 }}>
           {COLORS.map(c => (
