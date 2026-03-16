@@ -8,6 +8,9 @@ import Paint from "../components/Apps/Paint/Paint";
 import InternetExplorer from "../components/Apps/InternetExplorer/InternetExplorer";
 import WindowsMediaPlayer from "../components/Apps/WindowsMediaPlayer/WindowsMediaPlayer";
 import OutlookExpress from "../components/Apps/OutlookExpress/OutlookExpress";
+import Calculator from "../components/Apps/Calculator/Calculator";
+import RecycleBin from "../components/Apps/RecycleBin/RecycleBin";
+import FindFiles from "../components/Apps/Find/FindFiles";
 
 export const DESKTOP_ICONS = [
   {
@@ -79,6 +82,27 @@ export const DESKTOP_ICONS = [
     icon: "apps/32/internet-mail.png",
     defaultSize: { width: 750, height: 550 },
     component: OutlookExpress
+  },
+  {
+    id: "calculator",
+    label: "Calculator",
+    icon: "apps/32/accessories-calculator.png",
+    defaultSize: { width: 320, height: 350 },
+    component: Calculator
+  },
+  {
+    id: "recycle-bin",
+    label: "Recycle Bin",
+    icon: "places/32/user-trash_win98.png",
+    defaultSize: { width: 500, height: 350 },
+    component: RecycleBin,
+  },
+  {
+    id: "find",
+    label: "Find Files or Folders",
+    icon: "actions/32/find.png",
+    defaultSize: { width: 450, height: 300 },
+    component: FindFiles,
   }
 ];
 
@@ -101,6 +125,7 @@ export const START_MENU_ITEMS = [
         items: [
           { id: "paint", label: "Paint", icon: "apps/16/kolourpaint.png" },
           { id: "notepad", label: "Notepad", icon: "apps/16/accessories-text-editor.png" },
+          { id: "calculator", label: "Calculator", icon: "apps/16/accessories-calculator.png" },
           { id: "media-player", label: "Windows Media Player", icon: "apps/16/mplayer.png" },
         ]
       },
@@ -115,7 +140,7 @@ export const START_MENU_ITEMS = [
   },
   { id: "my-documents", label: "My Documents", icon: "places/16/folder-documents.png" },
   { label: "Settings", icon: "categories/16/applications-system.png" },
-  { label: "Find", icon: "actions/16/find.png" },
+  { id: "find", label: "Find", icon: "actions/16/find.png" },
   { label: "Help", icon: "apps/16/help.png" },
   { label: "Run...", icon: "actions/16/system-run.png" },
 ];
