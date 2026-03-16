@@ -105,7 +105,7 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
       onMouseDown={onFocus} 
       style={{
         position: "absolute", 
-        display: "flex", 
+        display: win.minimized ? "none" : "flex", 
         flexDirection: "column",
         minWidth: 200, 
         minHeight: 100,

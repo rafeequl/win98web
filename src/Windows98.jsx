@@ -43,9 +43,9 @@ export default function Windows98() {
       <Desktop onIconDoubleClick={openWindow} />
 
       {/* Window Manager Layer */}
-      {windows.filter(w => !w.minimized).map(w => {
+      {windows.map(w => {
         const activeWindows = windows.filter(win => !win.minimized);
-        const isActive = activeWindows.length > 0 && activeWindows.every(win => win.zIndex <= w.zIndex);
+        const isActive = !w.minimized && activeWindows.length > 0 && activeWindows.every(win => win.zIndex <= w.zIndex);
         
         return (
           <WindowShell
