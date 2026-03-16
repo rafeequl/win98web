@@ -47,10 +47,10 @@ export default function WinIcon({ icon, size = 32, style = {}, fallback = null }
   if (icon.startsWith('http')) {
     src = icon;
   } else {
-    // If icon is "apps/32/foo.png" -> "/base/icons/apps/32/foo.png"
-    // If icon is "/icons/apps/32/foo.png" -> "/base/icons/apps/32/foo.png"
-    const pathOnly = icon.startsWith('/icons/') ? icon.substring(7) : (icon.startsWith('icons/') ? icon.substring(6) : icon);
-    src = `${base}icons/${pathOnly}`.replace(/\/+/g, '/');
+    // Standardize path: remove double slashes and ensure it starts with /base/icons/
+    const cleanIcon = icon.startsWith('/') ? icon.slice(1) : icon;
+    const path = cleanIcon.startsWith('icons/') ? cleanIcon : `icons/${cleanIcon}`;
+    src = (base + path).replace(/\/+/g, '/');
   }
 
   return (
