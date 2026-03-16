@@ -6,6 +6,7 @@ import DisplayProperties from "../components/Apps/DisplayProperties/DisplayPrope
 import Minesweeper from "../components/Apps/Minesweeper/Minesweeper";
 import Paint from "../components/Apps/Paint/Paint";
 import InternetExplorer from "../components/Apps/InternetExplorer/InternetExplorer";
+import WindowsMediaPlayer from "../components/Apps/WindowsMediaPlayer/WindowsMediaPlayer";
 
 export const DESKTOP_ICONS = [
   {
@@ -58,6 +59,13 @@ export const DESKTOP_ICONS = [
     component: DisplayProperties,
   },
   {
+    id: "media-player",
+    label: "Windows Media Player",
+    icon: "apps/32/mplayer.png",
+    defaultSize: { width: 550, height: 450 },
+    component: WindowsMediaPlayer
+  },
+  {
     id: "icon-picker",
     label: "Icon Finder",
     icon: "apps/32/imageviewer.png",
@@ -85,6 +93,7 @@ export const START_MENU_ITEMS = [
         items: [
           { id: "paint", label: "Paint", icon: "apps/16/kolourpaint.png" },
           { id: "notepad", label: "Notepad", icon: "apps/16/accessories-text-editor.png" },
+          { id: "media-player", label: "Windows Media Player", icon: "apps/16/mplayer.png" },
         ]
       },
       {

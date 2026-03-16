@@ -35,28 +35,40 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
   const [pos, setPos] = useState(win.position);
   const [size, setSize] = useState(win.size);
   const [maximized, setMaximized] = useState(win.maximized || false);
+  const [isManipulating, setIsManipulating] = useState(false);
   const WindowContent = win.component;
 
   const handleDragStart = e => {
     if (maximized) return;
+    if (e.button !== 0) return; // Only left click
     e.preventDefault();
     onFocus();
+    setIsManipulating(true);
+
     const sx = e.clientX - pos.x, sy = e.clientY - pos.y;
-    const onMove = me => setPos({ x: Math.max(0, me.clientX - sx), y: Math.max(0, me.clientY - sy) });
+
+    const onMove = me => {
+      setPos({ x: Math.max(0, me.clientX - sx), y: Math.max(0, me.clientY - sy) });
+    };
+
     const onUp = (me) => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      setIsManipulating(false);
       onUpdate({ position: { x: Math.max(0, me.clientX - sx), y: Math.max(0, me.clientY - sy) } });
     };
+
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseup", onUp);
   };
 
   const handleResizeStart = (e, dir) => {
     if (maximized) return;
+    if (e.button !== 0) return;
     e.preventDefault();
     e.stopPropagation();
     onFocus();
+    setIsManipulating(true);
 
     const startX = e.clientX, startY = e.clientY;
     const startW = size.width, startH = size.height;
@@ -78,6 +90,7 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
     const onUp = (me) => {
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mouseup", onUp);
+      setIsManipulating(false);
 
       let finalW = startW, finalH = startH, finalX = startPX, finalY = startPY;
       const dx = me.clientX - startX, dy = me.clientY - startY;
@@ -119,14 +132,14 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
       {/* Resize handles */}
       {!maximized && (
         <>
-          <div onMouseDown={e => handleResizeStart(e, "n")} style={{ position: "absolute", top: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 1 }} />
-          <div onMouseDown={e => handleResizeStart(e, "s")} style={{ position: "absolute", bottom: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 1 }} />
-          <div onMouseDown={e => handleResizeStart(e, "e")} style={{ position: "absolute", top: 4, bottom: 4, right: -4, width: 8, cursor: "ew-resize", zIndex: 1 }} />
-          <div onMouseDown={e => handleResizeStart(e, "w")} style={{ position: "absolute", top: 4, bottom: 4, left: -4, width: 8, cursor: "ew-resize", zIndex: 1 }} />
-          <div onMouseDown={e => handleResizeStart(e, "nw")} style={{ position: "absolute", top: -4, left: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 2 }} />
-          <div onMouseDown={e => handleResizeStart(e, "ne")} style={{ position: "absolute", top: -4, right: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 2 }} />
-          <div onMouseDown={e => handleResizeStart(e, "sw")} style={{ position: "absolute", bottom: -4, left: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 2 }} />
-          <div onMouseDown={e => handleResizeStart(e, "se")} style={{ position: "absolute", bottom: -4, right: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 2 }} />
+          <div onMouseDown={e => handleResizeStart(e, "n")} style={{ position: "absolute", top: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "s")} style={{ position: "absolute", bottom: -4, left: 4, right: 4, height: 8, cursor: "ns-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "e")} style={{ position: "absolute", top: 4, bottom: 4, right: -4, width: 8, cursor: "ew-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "w")} style={{ position: "absolute", top: 4, bottom: 4, left: -4, width: 8, cursor: "ew-resize", zIndex: 10 }} />
+          <div onMouseDown={e => handleResizeStart(e, "nw")} style={{ position: "absolute", top: -4, left: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "ne")} style={{ position: "absolute", top: -4, right: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "sw")} style={{ position: "absolute", bottom: -4, left: -4, width: 10, height: 10, cursor: "nesw-resize", zIndex: 11 }} />
+          <div onMouseDown={e => handleResizeStart(e, "se")} style={{ position: "absolute", bottom: -4, right: -4, width: 10, height: 10, cursor: "nwse-resize", zIndex: 11 }} />
         </>
       )}
 
@@ -168,7 +181,19 @@ export default function WindowShell({ win, isActive, onClose, onFocus, onMinimiz
         </div>
       </div>
       {/* Body */}
-      <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1, overflow: "hidden", display: "flex", flexDirection: "column", position: "relative" }}>
+        {/* Iframe Shield Overlay */}
+        {isManipulating && (
+          <div style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 999,
+            background: "transparent"
+          }} />
+        )}
         <WindowContent />
       </div>
     </div>
