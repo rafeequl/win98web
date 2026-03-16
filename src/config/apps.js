@@ -2,6 +2,7 @@ import MyComputerWindow from "../components/Apps/MyComputer/MyComputer";
 import MyDocumentsWindow from "../components/Apps/MyDocuments/MyDocuments";
 import NotepadWindow from "../components/Apps/Notepad/Notepad";
 import IconPicker from "../components/Apps/IconPicker/IconPicker";
+import DisplayProperties from "../components/Apps/DisplayProperties/DisplayProperties";
 
 export const DESKTOP_ICONS = [
   {
@@ -24,6 +25,13 @@ export const DESKTOP_ICONS = [
     icon: "apps/32/accessories-text-editor.png",
     defaultSize: { width: 500, height: 400 },
     component: NotepadWindow
+  },
+  {
+    id: "display-props",
+    label: "Display Properties",
+    icon: "apps/32/kcontrol.png",
+    defaultSize: { width: 400, height: 300 },
+    component: DisplayProperties,
   },
   {
     id: "icon-picker",

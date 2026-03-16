@@ -54,23 +54,28 @@ export function DesktopIcon({ icon, selected, onSelect, onDoubleClick }) {
   );
 }
 
-export default function Desktop({ onIconDoubleClick }) {
+export default function Desktop({ onIconDoubleClick, wallpaper }) {
   const [selectedId, setSelectedId] = useState(null);
 
   const handleDesktopClick = () => {
     setSelectedId(null);
   };
 
+  const desktopStyle = {
+    flex: 1,
+    position: "relative",
+    background: "var(--w98-bg)",
+    backgroundImage: wallpaper ? `url(/wallpapers/${wallpaper})` : "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px)",
+    backgroundSize: wallpaper ? "cover" : "auto",
+    backgroundPosition: wallpaper ? "center" : "0 0",
+    backgroundRepeat: wallpaper ? "no-repeat" : "repeat",
+    overflow: "hidden",
+  };
+
   return (
     <div
       onClick={handleDesktopClick}
-      style={{
-        flex: 1,
-        position: "relative",
-        background: "var(--w98-bg)",
-        backgroundImage: "repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,.03) 2px, rgba(0,0,0,.03) 4px)",
-        overflow: "hidden",
-      }}
+      style={desktopStyle}
     >
       <div
         style={{

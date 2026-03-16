@@ -53,6 +53,7 @@ MIT
 
 --
 
-## Icons
+## Icons & Wallpapers
 
 https://github.com/nestoris/Win98SE
+https://windowswallpaper.miraheze.org/wiki/Windows_98
