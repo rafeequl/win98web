@@ -4,6 +4,7 @@ import NotepadWindow from "../components/Apps/Notepad/Notepad";
 import IconPicker from "../components/Apps/IconPicker/IconPicker";
 import DisplayProperties from "../components/Apps/DisplayProperties/DisplayProperties";
 import Minesweeper from "../components/Apps/Minesweeper/Minesweeper";
+import Paint from "../components/Apps/Paint/Paint";
 
 export const DESKTOP_ICONS = [
   {
@@ -26,6 +27,13 @@ export const DESKTOP_ICONS = [
     icon: "apps/32/accessories-text-editor.png",
     defaultSize: { width: 500, height: 400 },
     component: NotepadWindow
+  },
+  {
+    id: "paint",
+    label: "Paint",
+    icon: "apps/32/kolourpaint.png",
+    defaultSize: { width: 640, height: 480 },
+    component: Paint
   },
   {
     id: "minesweeper",
@@ -54,4 +62,33 @@ export const SYSTEM_ITEMS = [
   { label: "Help", icon: "apps/16/help.png" },
   { label: "Run...", icon: "actions/16/system-run.png" },
   { label: "Shut Down...", icon: "actions/16/system-shutdown.png" },
+];
+
+export const START_MENU_ITEMS = [
+  {
+    label: "Programs",
+    icon: "categories/16/applications-all.png",
+    items: [
+      {
+        label: "Accessories",
+        icon: "categories/16/applications-accessories.png",
+        items: [
+          { id: "paint", label: "Paint", icon: "apps/16/kolourpaint.png" },
+          { id: "notepad", label: "Notepad", icon: "apps/16/accessories-text-editor.png" },
+        ]
+      },
+      {
+        label: "Games",
+        icon: "categories/16/applications-games.png",
+        items: [
+          { id: "minesweeper", label: "Minesweeper", icon: "apps/16/mines.png" },
+        ]
+      }
+    ]
+  },
+  { id: "my-documents", label: "My Documents", icon: "places/16/folder-documents.png" },
+  { label: "Settings", icon: "categories/16/applications-system.png" },
+  { label: "Find", icon: "actions/16/find.png" },
+  { label: "Help", icon: "apps/16/help.png" },
+  { label: "Run...", icon: "actions/16/system-run.png" },
 ];
