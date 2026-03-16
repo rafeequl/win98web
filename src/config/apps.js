@@ -7,6 +7,7 @@ import Minesweeper from "../components/Apps/Minesweeper/Minesweeper";
 import Paint from "../components/Apps/Paint/Paint";
 import InternetExplorer from "../components/Apps/InternetExplorer/InternetExplorer";
 import WindowsMediaPlayer from "../components/Apps/WindowsMediaPlayer/WindowsMediaPlayer";
+import OutlookExpress from "../components/Apps/OutlookExpress/OutlookExpress";
 
 export const DESKTOP_ICONS = [
   {
@@ -71,6 +72,13 @@ export const DESKTOP_ICONS = [
     icon: "apps/32/imageviewer.png",
     defaultSize: { width: 600, height: 450 },
     component: IconPicker,
+  },
+  {
+    id: "outlook-express",
+    label: "Outlook Express",
+    icon: "apps/32/internet-mail.png",
+    defaultSize: { width: 750, height: 550 },
+    component: OutlookExpress
   }
 ];
 
@@ -82,7 +90,7 @@ export const SYSTEM_ITEMS = [
 
 export const START_MENU_ITEMS = [
   { id: "internet-explorer", label: "Internet Explorer", icon: "apps/16/web-browser.png" },
-  { label: "Outlook Express", icon: "apps/16/internet-mail.png" },
+  { id: "outlook-express", label: "Outlook Express", icon: "apps/16/internet-mail.png" },
   {
     label: "Programs",
     icon: "categories/16/applications-all.png",
